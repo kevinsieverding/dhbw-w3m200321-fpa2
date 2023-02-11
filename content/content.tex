@@ -21,29 +21,14 @@ Lastly, section \ref{sec:conclusion} discusses the results and concludes with an
 \section{Methodology}\label{sec:method}
 
 This work aims to examine a practical problem that occurs within certain modern \glspl{is} and to provide a potential solution to it.
-To that end, it follows the \gls[]{dsr} methodology, since it is focused on solving concrete problems by constructing and evaluating artifacts \parencite[68]{dresch_design_2015}.
+To that end, it follows the \gls[]{dsr} roadmap outlined by \cite[]{alturki_design_2011}.
 
+First, section \ref{sec:problem} constructs an example \gls[]{is} architecture that implements a common business process using microservices and asynchronous communication.
+This architecture serves as a basis for identifying the problem and research scope.
+Furthermore, the requirements towards a solution are deduced from the examined scenario and alternative solutions are explored.
 
-\begin{wrapfigure}{l}{0.4\textwidth}
-  \centering
-  \includegraphics[width=0.35\textwidth]{dsr-process.drawio.png}
-  \small{\emph{Source}: \cite[]{cole_being_2005}}
-  \caption{Research approach outlined by \cite[]{cole_being_2005}}\label{fig:cole-process}
-\end{wrapfigure}
-
-
-Specifically, the model laid out by \cite[]{cole_being_2005} is followed, because it has a specific connection to \gls[]{is} research and is more concise than other similar approaches which are laid out in the overview by \citeauthor{dresch_design_2015} \parencite[]{dresch_design_2015}.
-
-The \gls[]{dsr} process defined in \cite[]{alturki_design_2011} is an interesting alternative to \cite[]{cole_being_2005}, because it is much more granular and would thereby potentially result in more rigorous work.
-However, it would be too verbose for the limitations of this work.
-
-\cite[]{cole_being_2005} define a four-step-process for \gls[]{dsr}.
-The first step \emph{Problem Identification} consists of conceptualizing a problem.
-Here, section \ref{sec:problem} constructs the architecture of a hypothetical \gls[]{is} that is faced with the problem of requiring synchronous semantics on an asynchronous medium.
-Furthermore, the second step \emph{Intervention} is concerned with the construction of an artifact that addresses the problem as well as applying it to the problem .
-This step is undertaken in section \ref{sec:concept} which constructs a concept based on the problem definition in section \ref{sec:problem}.
-In the \emph{Evaluation} step the produced artifacts are evaluated
-\parencite{cole_being_2005}
+Section \ref{sec:concept} then proceeds to construct a concept for addressing the problem.
+Due to the limited scope of this work, the created construct is only evaluated artificially without an actual implementation.
 
 \section{Foundations}\label{sec:foundations}
 
