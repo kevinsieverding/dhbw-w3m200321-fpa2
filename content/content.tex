@@ -2,22 +2,25 @@
 
 \section{Introduction}
 
-Architectures of modern business applications aim to be responsive, elastic and resilient.
-To that end, they commonly employ the microservice pattern and message-oriented
-middleware.
+\citeauthor{boner_reactive_2014} in their \citetitle{boner_reactive_2014} outline qualities of modern \glspl[]{is} that make them better to use and easier to develop, maintain and extend.
+They summarize these qualities under the term \emph{reactive}.
 
-For certain domain or technical reasons, the communication between microservices via the asynchronous medium may require synchronous semantics.
-While some works in the professional literature \parencites{millett_patterns_2015,richardson_microservices_2019,stopford_designing_2018}\todo{add more} make reference for implementing synchronous semantics in asynchronous systems, none of them go into detail.
-The academic world as well does not provide a detailed examination of this topic.
+In my work at SAP~SE, my team and I are building \gls[]{saas} business applications that are supposed to offer a great user experience, while being as cost-effective as possible to develop, operate, maintain and extend.
+As a part of that effort we aim to make our product reactive by applying the microservice pattern and using asynchronous, message-based integration.
+While applying these design paradigms to the implementation of business features we repeatedly encounter situations where the feature requires synchronous semantics for the communication between two microservices.
+
+This requirement confronts us with a non-trivial design decision of how to best implement it in our system architecture that is dominated by asynchronous integration.
+Various works in the professional literature examine the problem briefly but the solution approaches which they offer do not go into great detail \parencites[pp.~706--708]{millett_patterns_2015}[pp.~30--32]{stopford_designing_2018}[pp.~87--89]{richardson_microservices_2019}.
+In academics, this particular problem has received no consideration so far.
 
 The goal of this work is to create a generic concept for implementing synchronous semantics via an asynchronous medium that fulfills the requirements of being responsive, elastic and resilient.
 
-To that end, the work follows the \gls[]{dsr} process outlined in \parencite{cole_being_2005}.
-After section \ref{sec:method} provides a discussion of the method chosen to approach the problem described before.
-Then, section \ref{sec:foundations} establishes necessary theoretical foundations and section \ref{sec:problem} examines the problem space in greater detail.
-Section \ref{sec:concept} derives a concept to address the problem, which is then evaluated in section \ref{sec:evaluation}.
+To that end, the work follows the \gls[]{dsr} process outlined in \cite{alturki_design_2011}.
+After section \ref{sec:method} provides a detailed discussion of the method, section \ref{sec:foundations} establishes necessary theoretical foundations.
+Then section \ref{sec:problem} examines the problem space in greater detail before section \ref{sec:concept} derives a concept to address the problem, which is then evaluated in section \ref{sec:evaluation}.
 Lastly, section \ref{sec:conclusion} discusses the results and concludes with an outlook on further work.
 
+\clearpage
 \section{Methodology}\label{sec:method}
 
 This work aims to examine a practical problem that occurs within certain modern \glspl{is} and to provide a potential solution to it.
@@ -30,6 +33,7 @@ Furthermore, the requirements towards a solution are deduced from the examined s
 Section \ref{sec:concept} then proceeds to construct a concept for addressing the problem.
 Due to the limited scope of this work, the created construct is only evaluated artificially without an actual implementation.
 
+\clearpage
 \section{Foundations}\label{sec:foundations}
 
 \subsection{Reactive Information Systems}
@@ -38,6 +42,7 @@ Due to the limited scope of this work, the created construct is only evaluated a
 
 \subsection{Message-based Communication}
 
+\clearpage
 \section{Distributed Business Processes In Reactive Information Systems}\label{sec:problem}
 
 This section examines the architecture of a hypothetical \gls{is} that implements a simplified version of the \gls{p2p} process.
@@ -123,14 +128,17 @@ In this setup, the \emph{Workflow Service} and other bounded contexts fall into 
 
 The solution however is still missing an aspect.
 Clients of the \emph{Workflow Service} need to know whether the service has received the approval request for a particular entity and properly processed it, so that they can provide accurate feedback to their users and know whether they should try to send the command again if it failed.
-At this point the communication semantics become synchronous because the clients need a reply from the server within a certain frame of time.
+At this point the communication semantics become \emph{synchronous} because the clients need a reply from the server within a certain frame of time.
 
 
 % Therefore, instead of only relying on what \cite[]{stopford_designing_2018} calls \emph{event choreography}, some \emph{event orchestration} needs to be introduced.
 % \parencite[pp.~30--31]{stopford_designing_2018}
 
+\clearpage
 \section{Concept}\label{sec:concept}
 
+\clearpage
 \section{Evaluation}\label{sec:evaluation}
 
+\clearpage
 \section{Conclusion}\label{sec:conclusion}
