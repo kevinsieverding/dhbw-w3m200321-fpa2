@@ -81,7 +81,29 @@ Thereby it allows for them to be more isolated and by extension makes the system
 
 \subsection{Microservice Architecture}
 
+This common architectural style is an approach to designing an application as a suite of small, loosely-coupled services.
+Each service runs in its own process and is independently deployable.
+They communicate amongst each other via lightweight mechanisms, such as HTTP APIs or asynchronous message-passing.
+\parencite{fowler_microservices_2014}
+
+Microservices are structured around business capability rather than technical function.
+This means that instead of having a team of \gls[]{ui} experts work on the entire \gls[]{ui} of the application, a team of middleware specialists work on all the middleware and a team of all data base specialist work on all the data base administration, the teams are organized in a cross-functional manner around certain business capabilities.
+\parencite{fowler_microservices_2014}
+
+When looking at how to decompose the application domain into distinct business capabilities, \gls[]{ddd} is commonly used.
+Among other things, it offers various patterns for mapping and understanding problem domains as well as for dissecting them into smaller, more controllable sub-domains.
+The approach encourages domain experts and developers to create a common language, to create models of relevant sub-domains as a basis for development and to clearly separate them from other sub-domains.
+\gls[]{ddd} is an approach to building software for complex problem domains \parencite[4--14]{millett_patterns_2015}.
+
+These sub-domains with their models, terminology and context are referred to as bounded contexts \parencite[79--85]{millett_patterns_2015}.
+In the development of microservices, these bounded contexts are commonly used as a basis for structuring the suite of services.
+
+The the microservice pattern offers the decomposition of a system into isolated components required for a reactive system to be resilient and reactive.
+Together with message-based integration it can serve as the conceptual foundation for reactive \glspl{is}.
+
 \subsection{Message-driven Integration}
+
+
 
 \clearpage
 \section{Distributed Business Processes In Reactive Information Systems}\label{sec:problem}
