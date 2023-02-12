@@ -40,7 +40,7 @@ Thereby it completes the next three steps on the roadmap \parencite[111]{alturki
 The theme of the research conducted here is the construction of an artifact and excludes its evaluation so that the scope intended for this work is not exceeded.\todo{maybe mention artificial evaluation}
 This addresses the seventh step on the roadmap: \enquote{Resolve Theme} \parencite[114]{alturki_design_2011}.
 
-The next five steps on the roadmap are addressed in section \ref{sec:concept}: \enquote{Define Requirements}, \enquote{Define Alternative Solutions}, \enquote{Explorer [\emph{sic}] Knowledge Base Support of Alternatives}, \enquote{Prepare for Design and/or Evaluation} and \enquote{Develop} \Parencite[114--115]{alturki_design_2011}.
+Section \ref{sec:method} condenses the next five steps on the roadmap \parencite[114--115]{alturki_design_2011} into deriving requirements from the problem analysis and the qualities of a reactive system, exploring solution alternatives and constructing a concept for a concrete solution alternative.
 The step \enquote{Evaluate} is delegated to further work and the last step \enquote{Communicate findings} is addressed implicitly by this work \Parencite[115--116]{alturki_design_2011}.
 
 \clearpage
@@ -54,7 +54,7 @@ First, the qualities of reactive \gls[]{is} as defined by \cite[]{boner_reactive
 In \cite[]{boner_reactive_2014} the authors define four qualities that they observed in various modern \glspl[]{is} of different domains.
 They describe how these qualities combine to make an \gls[]{is} what they call \emph{reactive} and how a reactive systems are more flexible, scalable, changeable and offer a superior user experience.
 
-\begin{figure}[h]
+\begin{figure}[ht]
   \centering
   \includegraphics[width=0.9\textwidth]{reactive.drawio.png}
   \\\emph{Source}: \cite[]{boner_reactive_2014}
@@ -227,7 +227,28 @@ Regarding the research roadmap of \cite[]{alturki_design_2011}, this section has
 As described in section \ref{sec:method}, the following section continues the roadmap and explores the solution space.
 
 \clearpage
-\section{Concept}\label{sec:concept}
+\section{Synchronous Communication in Message-driven Information Systems}\label{sec:concept}
+
+\subsection{Requirements}
+
+\begin{table}[ht]
+  \begin{tabu}{| l | X |}
+    \hline
+    F1 & Must enable directed communication from A to B and a corresponding response from B to A.                              \\
+    \hline
+    F2 & Must let A define an upper limit on the response time for B, before the communication is considered as having failed. \\
+    \hline
+    N1 & Must be resilient against partial failure of either A or B.                                                           \\
+    \hline
+    N2 & Must be elastic towards varying workload.                                                                             \\
+    \hline
+  \end{tabu}
+  \caption[short]{Requirements for a synchronous communication in reactive IS}\label{tab:requirements}
+\end{table}
+
+\subsection{Alternative Solutions}
+
+\subsection{Concept}
 
 % \clearpage
 % \section{Evaluation}\label{sec:evaluation}
