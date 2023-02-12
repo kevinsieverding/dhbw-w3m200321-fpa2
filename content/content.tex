@@ -6,15 +6,15 @@
 They summarize these qualities under the term \emph{reactive}.
 
 In my work at SAP~SE, my team and I are building \gls[]{saas} business applications that are supposed to offer a great user experience, while being as cost-effective as possible to develop, operate, maintain and extend.
-As a part of that effort we aim to make our product reactive by applying the microservice pattern and using asynchronous, message-based integration.
+As a part of that effort we aim to make our product reactive by applying the microservice pattern and using asynchronous, message-driven integration.
 While applying these design paradigms to the implementation of business features we repeatedly encounter situations where the feature requires synchronous semantics for the communication between two microservices.
 
 This requirement confronts us with a non-trivial design decision of how to best implement it in our system architecture that is dominated by asynchronous integration.
 Various works in the professional literature examine the problem briefly but the solution approaches which they offer do not go into great detail \parencites[706--708]{millett_patterns_2015}[30--32]{stopford_designing_2018}[87--89]{richardson_microservices_2019}.
 In academics, this particular problem has received no consideration so far.
 
-The goal of this work is to create a generic concept for implementing synchronous semantics via an asynchronous medium that fulfills the requirement of being reactive.
-Such a concept addresses a problem that is not only immediately relevant to my organization but is also transferable to various other \gls[]{is} architectures, since the use of the microservice pattern and message-based integration is widespread.
+The goal of this work is to create a generic concept for implementing synchronous communication semantics in a reactive \gls[]{is}.
+Such a concept addresses a problem that is not only immediately relevant to my organization but is also transferable to various other \gls[]{is} architectures, since the use of the microservice pattern and message-driven integration is widespread.
 Furthermore, this work adds to the knowledge base by clearly examining the problem space, discussing the solution approaches in the professional literature and constructing a new concept for addressing it.
 
 To that end, the work applies the \gls[]{dsr} process outlined in \cite{alturki_design_2011} which is discussed in more detail in the following section \ref{sec:method}.
@@ -45,11 +45,43 @@ The step \enquote{Evaluate} is delegated to further work and the last step \enqu
 \clearpage
 \section{Foundations}\label{sec:foundations}
 
+This section introduces concepts that are required as a foundation for the discussion in the following sections.
+First, the qualities of reactive \gls[]{is} as defined by \cite[]{boner_reactive_2014} are presented followed by an overview of the microservice design pattern and message-based integration---two design approaches commonly used to design reactive \gls[]{is}.
+
 \subsection{Reactive Information Systems}
+
+In \cite[]{boner_reactive_2014} the authors define four qualities that they observed in various modern \glspl[]{is} of different domains.
+They describe how these qualities combine to make an \gls[]{is} what they call \emph{reactive} and how a reactive systems are more flexible, scalable, changeable and offer a superior user experience.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.9\textwidth]{reactive.drawio.png}
+  \\\emph{Source}: \cite[]{boner_reactive_2014}
+  \caption{The Qualities of a Reactive Information System}\label{fig:reactive}
+\end{figure}
+
+Figure \ref{fig:reactive} shows the four qualities of a reactive system and how they relate to each other.
+Most importantly, a reactive system is \emph{responsive}.
+That means the system provides its service in a consistent quality with consistent, rapid response times.
+
+Furthermore, a reactive system must be \emph{resilient}.
+It must remain responsive even if it faces partial failure.
+The system is composed of isolated components that can fail and recover without bringing down the system as a whole.
+This composition is transparent for the client.
+
+No less important that resilience is being \emph{elastic}.
+A system must remain responsive under varying workload.
+Its components can be scaled up or down according to demand to achieve elasticity in the most cost-effective manner.
+Both elasticity and resilience require the system's composition of isolated components.
+
+Lastly, the fundamental quality of a reactive system is being \emph{message-driven}.
+They integrate their components by implementing a mechanism of asynchronous message-passing.
+Asynchronous, non-blocking communication decouples the components both functionally and temporally.
+Thereby it allows for them to be more isolated and by extension makes the system more resilient and elastic.
 
 \subsection{Microservice Architecture}
 
-\subsection{Message-based Communication}
+\subsection{Message-driven Integration}
 
 \clearpage
 \section{Distributed Business Processes In Reactive Information Systems}\label{sec:problem}
