@@ -2,23 +2,24 @@
 
 \section{Introduction}\label{sec:introduction}
 
-\citeauthor{boner_reactive_2014} in their \citetitle{boner_reactive_2014} outline qualities of modern \glspl[]{is} that make them better to use and easier to develop, maintain and extend.
+\citeauthor{boner_reactive_2014} in their \citetitle{boner_reactive_2014} outline qualities of modern \glspl[]{is} that make them better to use as well as easier to develop, maintain and extend.
 They summarize these qualities under the term \emph{reactive}.
 
 In my work at SAP~SE, my team and I are building \gls[]{saas} business applications that are supposed to offer a great user experience, while being as cost-effective as possible to develop, operate, maintain and extend.
 As a part of that effort we aim to make our product reactive by applying the microservice pattern and using asynchronous, message-driven integration.
-While applying these design paradigms to the implementation of business features we repeatedly encounter situations where the feature requires synchronous semantics for the communication between two microservices.
+While applying these design paradigms to the implementation of business features we sometimes encounter situations where the feature requires synchronous communication between two microservices.
 
 This requirement confronts us with a non-trivial design decision of how to best implement it in our system architecture that is dominated by asynchronous integration.
 Various works in the professional literature examine the problem briefly but the solution approaches which they offer do not go into great detail \parencites[706--708]{millett_patterns_2015}[30--32]{stopford_designing_2018}[87--89]{richardson_microservices_2019}.
 In academics, this particular problem has received no consideration so far.
 
-The goal of this work is to create a generic concept for implementing synchronous communication semantics in a reactive \gls[]{is}.
+The goal of this work is to create a generic concept for implementing synchronous communication in a reactive \gls[]{is}.
 Such a concept addresses a problem that is not only immediately relevant to my organization but is also transferable to various other \gls[]{is} architectures, since the use of the microservice pattern and message-driven integration is widespread.
 Furthermore, this work adds to the knowledge base by clearly examining the problem space, discussing the solution approaches in the professional literature and constructing a new concept for addressing it.
 
 To that end, the work applies the \gls[]{dsr} process outlined in \cite{alturki_design_2011} which is discussed in more detail in the following section \ref{sec:method}.
-Afterwards, section \ref{sec:foundations} establishes necessary theoretical foundations and is followed by section \ref{sec:problem} which examines the problem space in greater detail before section \ref{sec:concept} derives a concept to address the problem, which is then evaluated in section \ref{sec:evaluation}.
+Afterwards, section \ref{sec:foundations} establishes necessary theoretical foundations and is followed by section \ref{sec:problem} which examines the problem space in greater detail before section \ref{sec:concept} derives a concept to address the problem.
+% , which is then evaluated in section \ref{sec:evaluation}.
 Lastly, section \ref{sec:conclusion} discusses the results and concludes with an outlook on further work.
 
 \clearpage
@@ -106,7 +107,7 @@ Together with message-based integration it can serve as the conceptual foundatio
 The foundational quality of a reactive \gls[]{is} is being message-driven.
 System architectures commonly employ a dedicated software components solely for that purpose---the so-called \gls[]{mom}.
 \gls[]{mom} act as dedicated glue-ware that facilitates asynchronous message-passing between other software components.
-The software offers publish/subscribe semantics for packets of data called messages.
+The software offers publish/subscribe functionality for packets of data called messages.
 Clients act as either \emph{publishers} or \emph{consumers}, or as both simultaneously.
 Publishers connect to the \gls[]{mom} to address a message to a specific communication channel often referred to as a \emph{topic}.
 Consumers subscribe themselves to one or multiple topics and receive all messages that are published to them from the \gls[]{mom} via either a push- or pull-mechanism.
@@ -119,20 +120,24 @@ Furthermore, some \gls[]{mom} concepts and implementations can have routing and 
 The text below however uses the term message broker and means it to be a simple \gls[]{mom} as described in the previous paragraph.
 
 \clearpage
-\section{Distributed Business Processes In Reactive Information Systems}\label{sec:problem}
+\section{A Message-Driven Information System}\label{sec:problem}
 
-This section examines the architecture of a hypothetical \gls{is} that implements a simplified version of the \gls{p2p} process.
-The process describes the procurement of a company and is commonly implemented by \gls{erp} systems.
-Since the process is commonplace, taking an \gls{is} that implements it as the basis for this work should result an artifact that is easily transferable to other \gls{is}.
+This section examines the hypothetical architecture design of a reactive \gls[]{is} that implements a common business process to explore the problem of synchronous communication in message-driven systems.
+To begin, the following introduces the business process which is implemented by the \gls[]{is}---the \gls[]{p2p} process.
+The process relatively simple and common to many organizations.
+Therefore, it serves as a good example and does not distract from the technical discussion below.
+After the \gls[]{p2p} process, the text introduces the sample architecture and uses it as a basis for the problem discussion.
 
 \subsection{The Procure-to-Pay Process}
 
 Figure \ref{fig:procure-to-pay} shows the distinct steps of the \gls{p2p} process.
-On the procurement side, the process begins with a request.
-For example, when an employee of a company requests a new stack of printing paper.
-In this form of the process every request needs to be approved by a supervisor---a cost center manager for example.
-An approved request can then be turned into an order by the company's purchasing department.
-The order is then sent to the supplier.
+Since it only serves as the background for technical discussion this representation of the process is intentionally simple.
+
+On the \enquote{procure} side, the process begins with a request.
+For example, when an employee of an organization requests a new stack of printing paper, they would create a request for it in the system.
+After the request has been created, it requires the approval of a supervisor.
+A cost center manager, for example.
+Once the request is approved, the organization's purchasing department can create an order which is then sent to the supplier.
 
 \begin{figure}[h]
   \centering
@@ -140,26 +145,25 @@ The order is then sent to the supplier.
   \caption{The Procure-to-Pay Process}\label{fig:procure-to-pay}
 \end{figure}
 
-When the ordered goods are delivered to the company, the process continues on the payment side.
+When the ordered goods are delivered to the organization, the process continues on the \emph{pay} side.
 The goods are inspected and a goods receipt is created which is checked against the supplier's invoice.
 If everything is in order, payment is made to the supplier.
 
-To be as concise as possible, the sample \gls{is} architecture described by the following only includes the procurement part of the \gls{p2p} process.
+The example architecture implementing this process is introduced below.
+To keep it concise, it only implements the \emph{procure} part of the process.
 
 \subsection{A Reactive Procurement Application}
 
-Figure \ref{fig:example-architecture} shows the architecture of a reactive \gls{is} that implements the procurement part of the \gls{p2p} process.
+Figure \ref{fig:example-architecture} shows the example architecture.
 The procurement domain is decomposed into three bounded contexts: Request, Order and Workflow.
-Each sub-domain is implemented by a dedicated microservice.
+Each context is implemented by a dedicated microservice.
 
 The \gls{ui} is fragmented into a set of web-applications accessed by users via their internet browsers.
 These fragments are not strictly separated by bounded context, but rather by use case, with the aim of providing a superior user experience.
-For example, purchaser's may need to edit an employee's request to correct descriptions and prices because the employee's initial inputs were insufficient.
+For example, purchasers may need to edit an employee's request to correct the description or price because the employee's initial inputs were insufficient.
 
-The microservices communicate asynchronously via a \gls{mom} with each other.
-They read and write events to and from domain-specific topics within the \gls{mom}.
-\todo{actually read ddd to make sure that you use these terms correctly}
-\todo{explain rudimentary ddd together with microservices}
+The microservices communicate with each other by asynchronous message-passing via a message broker.
+They consume and publish messages with domain events to and from domain-specific topics within the broker.
 
 \begin{figure}[H]
   \centering
@@ -167,7 +171,7 @@ They read and write events to and from domain-specific topics within the \gls{mo
   \caption{The Example Architecture}\label{fig:example-architecture}
 \end{figure}
 
-In figure \ref{fig:example-architecture}, the different actors that interact with the \gls{is} in the context of the procurement process are shown at the top.
+In the figure, the different actors that use the \gls{is} in the context of the procurement process are shown at the top.
 They interact with the system via the \gls{ui} fragments shown below as indicated by the arrows.
 The fragments in turn interact with the microservices as indicated by the arrows.
 Employees can request goods via the \emph{Requesting UI} and purchasers can edit requests as well as create orders via the \emph{Purchasing UI}.
@@ -175,27 +179,34 @@ Hence, the \emph{Purchasing UI} interacts with both the \emph{Request Service} a
 Requests are approved by managers via the \emph{Workflow UI} that interacts with the underlying \emph{Workflow Service}.
 Although they are omitted in the diagram, each microservice is assumed to have a dedicated persistent storage.
 
-The asynchronous communication of the microservices via the \gls{mom} is represented in figure \ref{fig:example-architecture} by the dashed arrows.
+The asynchronous communication of the microservices via the broker is represented in figure \ref{fig:example-architecture} by the dashed arrows.
 The \emph{Request Service} publishes events to the \emph{Requests} topic.
 These events---in sum---contain all the information on all requests that exist in the system.
-Therefore, the \emph{Order Service} replicates the requests by aggregating the events from the \emph{Requests}.
+Listing \ref{lst:request-created} shows what an event of the request domain may look like.
+
+\begin{listing}[h]
+  \inputminted{json}{assets/src/request-created.json}
+  \caption{An example for a \texttt{RequestCreated} domain event}\label{lst:request-created}
+\end{listing}
+
+The \emph{Order Service} replicates the requests by aggregating the events from the \emph{Requests} topic.
 When an order is created via the \emph{Order Service}, it publishes an appropriate event to the \emph{Orders} topic.
 From there, it could theoretically be consumed by other \glspl{is} to, for example, send the order to suppliers via mail or e-mail, or to reserve a budget in the company's accounts.
 Finally, the \emph{Workflow Service} publishes to the \emph{Approvals} topic when a manager approves a request.
 The \emph{Request Service} consumes these events to update the status of a request when it has been approved.
 This status change is then replicated to the \emph{Order Service} so that purchaser can create an order for the request.
 
-\subsection{Synchronous Communication in Asynchronous Information Systems}
+\subsection{The Need for Synchronous Communication}
 
 The system architecture above is missing a crucial part.
-Namely, how the workflow service is notified about new requests that need to be approved.
+Namely, how the \emph{Workflow Service} is notified about new requests that need to be approved.
 An easy way of achieving this would be for the \emph{Workflow Service} to also consume events from the \emph{Requests} topic.
 In this way it would be notified when new requests are created and need to be approved.
 
-While that is a simple solution, it is cumbersome to extend.
+While that is a simple solution, it is also cumbersome to extend.
 This becomes clear considering this hypothetical future requirement: Orders require a final approval before they are sent out to the supplier.
-To address this requirement, the workflow service would need to listen to the \emph{Orders} topic as well.
-The same would be true for any other business entity that might require approvals in the future.
+To address this requirement, the \emph{Workflow Service} would need to listen to the \emph{Orders} topic as well.
+The same would be true for any other domain entity that might require approvals in the future.
 
 Instead of the \emph{Workflow Service} picking up the required approvals from the other bounded contexts, the scheme can be inverted so that the bounded contexts tell the service when they require an approval.
 This could be implemented by adding new topic \emph{Approval Requests} to the message broker and letting each domain that requires approvals publish events to it.
@@ -203,14 +214,23 @@ The \emph{Workflow Service} would consume and offer the approval requests to the
 In this setup, the \emph{Workflow Service} and other bounded contexts fall into the traditional roles of server and clients.
 
 The solution however is still missing an aspect.
-Clients of the \emph{Workflow Service} need to know whether the service has received the approval request for a particular entity and properly processed it, so that they can provide accurate feedback to their users and know whether they should try to send the command again if it failed.
-At this point the communication semantics become \emph{synchronous} because the clients need a reply from the server within a certain frame of time.
+Clients of the \emph{Workflow Service} need to know whether the service has received the approval request for a particular entity and whether it was properly processed.
+They require this information to prevent approval requests being lost if, for example, due to a bug in the \emph{Workflow Service} it cannot process a couple of messages and drops them instead.
+With the appropriate feedback, the other microservices could re-send the request after a waiting period to ensure that it is processed.
+It furthermore enables them to provide accurate feedback to their users.
+At this point the required mode mode of communication is synchronous because the clients need a reply from the server within a certain time frame.
+
+A simple solution to this problem is to break with the message-driven paradigm and let the other bounded contexts use an inherently synchronous communication pattern (like HTTP) to tell the \emph{Workflow Service} about new approval requests.
+This approach, however, has its downsides and the problem lies in choosing the best solution.
+
+Regarding the research roadmap of \cite[]{alturki_design_2011}, this section has documented the problem space and demonstrated the feasibility of a solution.
+As described in section \ref{sec:method}, the following section continues the roadmap and explores the solution space.
 
 \clearpage
 \section{Concept}\label{sec:concept}
 
-\clearpage
-\section{Evaluation}\label{sec:evaluation}
+% \clearpage
+% \section{Evaluation}\label{sec:evaluation}
 
 \clearpage
 \section{Conclusion}\label{sec:conclusion}
