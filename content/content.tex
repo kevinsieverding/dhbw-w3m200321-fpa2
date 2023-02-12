@@ -103,7 +103,20 @@ Together with message-based integration it can serve as the conceptual foundatio
 
 \subsection{Message-driven Integration}
 
+The foundational quality of a reactive \gls[]{is} is being message-driven.
+System architectures commonly employ a dedicated software components solely for that purpose---the so-called \gls[]{mom}.
+\gls[]{mom} act as dedicated glue-ware that facilitates asynchronous message-passing between other software components.
+The software offers publish/subscribe semantics for packets of data called messages.
+Clients act as either \emph{publishers} or \emph{consumers}, or as both simultaneously.
+Publishers connect to the \gls[]{mom} to address a message to a specific communication channel often referred to as a \emph{topic}.
+Consumers subscribe themselves to one or multiple topics and receive all messages that are published to them from the \gls[]{mom} via either a push- or pull-mechanism.
+\parencite{banavar_case_1999}
 
+Other names that might be used for \gls[]{mom} are \emph{message bus} or \emph{message broker}.
+Depending on the source, these terms might be used synonymously or to refer to different variants of \gls[]{mom}.
+Furthermore, some \gls[]{mom} concepts and implementations can have routing and transformation functionality for messages as part of the component.
+\cite{banavar_case_1999} for example write of \enquote{message flow graphs} as part of \gls[]{mom} to offer this functionality.
+The text below however uses the term message broker and means it to be a simple \gls[]{mom} as described in the previous paragraph.
 
 \clearpage
 \section{Distributed Business Processes In Reactive Information Systems}\label{sec:problem}
