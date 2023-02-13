@@ -2,6 +2,7 @@
   "type": "RequestCreated",
   "payload": {
     "ID": "e1457a9c-48f9-4368-ba8a-f0aceceaeb81",
+    "HumanReadableID": "REQ0000001337",
     "title": "A stack of printing paper",
     "description": "A stack of A4 printing paper. 80g/m².",
     "price": 35.00,

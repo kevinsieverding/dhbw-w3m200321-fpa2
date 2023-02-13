@@ -229,7 +229,14 @@ As described in section \ref{sec:method}, the following section continues the ro
 \clearpage
 \section{Synchronous Communication in Message-driven Information Systems}\label{sec:concept}
 
+This section first deduces requirements from the problem analysis and the qualities of a reactive system.
+It the discusses the solution approaches from professional literature and finally constructs a concept to address the problem.
+
 \subsection{Requirements}
+
+In order to discern a solution to the problem explored above, a set of requirements needs to be defined to guide the discussion and evaluate approaches.
+The solution needs to fulfill both functional requirements (i.~e. functionally address the gap identified in section \ref{sec:problem}) as well as non-functional requirements.
+Based on the premise of this work, that the \gls[]{is} is supposed to be reactive, the non-functional requirements are derived from the qualities of a reactive system.
 
 \begin{table}[ht]
   \begin{tabu}{| l | X |}
@@ -246,7 +253,23 @@ As described in section \ref{sec:method}, the following section continues the ro
   \caption[short]{Requirements for a synchronous communication in reactive IS}\label{tab:requirements}
 \end{table}
 
+Table \ref{tab:requirements} shows the requirements for a solution approach.
+The functional requirements are labeled with an F and a number, while the non-functional requirements are labeled with an N and a number.
+
+The two functional requirements directly address the need identified before.
+For two components A and B, the solution must facilitate directional communication from A to B with a corresponding reply from B to A.
+Furthermore, the solution must allow A to set an upper boundary on the time for B to reply after which the communication is considered failed.
+
+Based on the reactive quality of resilience, the solution must allow recovery from partial failure.
+For example, either A or B failing during conversation.
+In such a case, data must not be lost and the parties must be able to resume the communication.
+Similarly, the solution must be elastic.
+It must be able to function under varying workload and must not add any significant performance impact for high load scenarios.
+
 \subsection{Alternative Solutions}
+
+Multiple works address the introduction of synchronous communication semantics into message-based systems.
+
 
 \subsection{Concept}
 
