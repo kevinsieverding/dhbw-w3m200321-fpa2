@@ -2,19 +2,19 @@
 
 \section{Introduction}\label{sec:introduction}
 
-\citeauthor{boner_reactive_2014} in their \citetitle{boner_reactive_2014} outline qualities of modern \glspl[]{is} that make them better to use as well as easier to develop, maintain and extend.
+\citeauthor{boner_reactive_2014} in their \citetitle{boner_reactive_2014} outline qualities of modern \glspl[]{is} which make them better to use as well as easier to develop, maintain and extend.
 They summarize these qualities under the term \emph{reactive}.
 
 In my work at SAP~SE, my team and I are building \gls[]{saas} business applications that are supposed to offer a great user experience, while being as cost-effective as possible to develop, operate, maintain and extend.
-As a part of that effort we aim to make our product reactive by applying the microservice pattern and using asynchronous, message-driven integration.
+As part of that effort we aim to make our product reactive by applying the microservice pattern and using asynchronous, message-driven integration.
 While applying these design paradigms to the implementation of business features we sometimes encounter situations where the feature requires synchronous communication between two microservices.
 
-This requirement confronts us with a non-trivial design decision of how to best implement it in our system architecture that is dominated by asynchronous integration.
+This requirement confronts us with a non-trivial design decision of how to best implement it in our system architecture, which is dominated by asynchronous integration.
 Various works in the professional literature examine the problem briefly but the solution approaches which they offer do not go into great detail \parencites[706--708]{millett_patterns_2015}[30--32]{stopford_designing_2018}[87--89]{richardson_microservices_2019}.
 In academics, this particular problem has received no consideration so far.
 
 The goal of this work is to create a generic concept for implementing synchronous communication in a reactive \gls[]{is}.
-Such a concept addresses a problem that is not only immediately relevant to my organization but is also transferable to various other \gls[]{is} architectures, since the use of the microservice pattern and message-driven integration is widespread.
+This concept addresses a problem that is not only immediately relevant to my organization, but is also transferable to various other \gls[]{is} architectures, since the use of the microservice pattern and message-driven integration is widespread.
 Furthermore, this work adds to the knowledge base by clearly examining the problem space, discussing the solution approaches in the professional literature and constructing a new concept for addressing it.
 
 To that end, the work applies the \gls[]{dsr} process outlined in \cite{alturki_design_2011} which is discussed in more detail in the following section \ref{sec:method}.
@@ -36,17 +36,17 @@ Further examination of the problem is taken up in section \ref{sec:problem} whic
 
 Furthermore, section \ref{sec:problem} together with the research goal defines the research scope and resolves that the problem falls within the domain of design science---more specifically \gls[]{dsr}.
 Thereby it completes the next three steps on the roadmap \parencite[111]{alturki_design_2011}.
-The theme of the research conducted here is the construction of an artifact and excludes its evaluation so that the scope intended for this work is not exceeded.
+The theme of the research conducted here is the construction of an artifact and excludes its practical evaluation so that the scope intended for this work is not exceeded.
 This addresses the seventh step on the roadmap: \enquote{Resolve Theme} \parencite[114]{alturki_design_2011}.
 
-Section \ref{sec:method} condenses the next five steps on the roadmap \parencite[114--115]{alturki_design_2011} into deriving requirements from the problem analysis and the qualities of a reactive system, exploring the professional literature for matching approaches, and constructing a concept for a concrete solution.
+Section \ref{sec:concept} condenses the next five steps on the roadmap \parencite[114--115]{alturki_design_2011} into deriving requirements from the problem analysis and the qualities of a reactive system, exploring the professional literature for matching approaches, and constructing a concept for a concrete solution.
 The step \enquote{Evaluate} is delegated to further work and the last step \enquote{Communicate findings} is addressed implicitly by this work \Parencite[115--116]{alturki_design_2011}.
 
 \clearpage
 \section{Foundations}\label{sec:foundations}
 
 This section introduces concepts that are required as a foundation for the discussion in the following sections.
-First, the qualities of reactive \gls[]{is} as defined by \cite[]{boner_reactive_2014} are presented followed by an overview of the microservice design pattern and message-based integration---two design approaches commonly used to design reactive \gls[]{is}.
+First, the qualities of reactive \gls[]{is} as defined by \cite[]{boner_reactive_2014} are presented followed by an overview of the microservice design pattern and message-based integration---two approaches commonly used to design reactive \gls[]{is}.
 
 \subsection{Reactive Information Systems}
 
@@ -57,7 +57,7 @@ They describe how these qualities combine to make an \gls[]{is} what they call \
   \centering
   \includegraphics[width=0.9\textwidth]{reactive.drawio.png}
   \\\emph{Source}: \cite[]{boner_reactive_2014}
-  \caption{The Qualities of a Reactive Information System}\label{fig:reactive}
+  \caption{The qualities of a reactive Information System}\label{fig:reactive}
 \end{figure}
 
 Figure \ref{fig:reactive} shows the four qualities of a reactive system and how they relate to each other.
@@ -82,7 +82,7 @@ Thereby it allows for them to be more isolated and by extension makes the system
 \subsection{Microservice Architecture}
 
 This common architectural style is an approach to designing an application as a suite of small, loosely-coupled services.
-Each service runs in its own process and is independently deployable.
+Each service runs as its own process and is independently deployable.
 They communicate amongst each other via lightweight mechanisms, such as HTTP APIs or asynchronous message-passing.
 \parencite{fowler_microservices_2014}
 
@@ -92,13 +92,12 @@ This means that instead of having a team of \gls[]{ui} experts work on the entir
 
 When looking at how to decompose the application domain into distinct business capabilities, \gls[]{ddd} is commonly used.
 Among other things, it offers various patterns for mapping and understanding problem domains as well as for dissecting them into smaller, more controllable sub-domains.
-The approach encourages domain experts and developers to create a common language, to create models of relevant sub-domains as a basis for development and to clearly separate them from other sub-domains.
-\gls[]{ddd} is an approach to building software for complex problem domains \parencite[4--14]{millett_patterns_2015}.
+The approach encourages domain experts and developers to create a common language, create models of relevant sub-domains as a basis for development, and to clearly separate them from other sub-domains \parencite[4--14]{millett_patterns_2015}.
 
 These sub-domains with their models, terminology and context are referred to as bounded contexts \parencite[79--85]{millett_patterns_2015}.
-In the development of microservices, these bounded contexts are commonly used as a basis for structuring the suite of services.
+In the development of microservices, these bounded contexts are commonly used as a basis for structuring the application.
 
-The the microservice pattern offers the decomposition of a system into isolated components required for a reactive system to be resilient and reactive.
+The microservice pattern offers the decomposition of a system into isolated components which is required for a system to be resilient and elastic.
 Together with message-based integration it can serve as the conceptual foundation for reactive \glspl{is}.
 
 \subsection{Message-driven Integration}
@@ -114,7 +113,7 @@ Consumers subscribe themselves to one or multiple topics and receive all message
 
 Other names that might be used for \gls[]{mom} are \emph{message bus} or \emph{message broker}.
 Depending on the source, these terms might be used synonymously or to refer to different variants of \gls[]{mom}.
-Furthermore, some \gls[]{mom} concepts and implementations can have routing and transformation functionality for messages as part of the component.
+Furthermore, some \gls[]{mom} concepts and implementations can have routing and transformation functionality as part of the component.
 \cite{banavar_case_1999} for example write of \enquote{message flow graphs} as part of \gls[]{mom} to offer this functionality.
 The text below however uses the term message broker to refer to a simple variant of \gls[]{mom} as described in the previous paragraph.
 
@@ -123,9 +122,9 @@ The text below however uses the term message broker to refer to a simple variant
 
 This section examines the hypothetical architecture design of a reactive \gls[]{is} that implements a common business process to explore the problem of synchronous communication in message-driven systems.
 To begin, the following text introduces the business process which is implemented by the \gls[]{is}---the \gls[]{p2p} process.
-The process is simple and common to many organizations.
+This process is simple and common to many organizations.
 Therefore, it serves as a good example and does not distract from the technical discussion below.
-After the \gls[]{p2p} process, the text introduces the sample architecture and uses it as a basis for the problem discussion.
+Following the \gls[]{p2p} process, the text introduces the sample architecture and uses it as a basis for the problem discussion.
 
 \subsection{The Procure-to-Pay Process}
 
@@ -133,17 +132,17 @@ Figure \ref{fig:procure-to-pay} shows the distinct steps of the \gls{p2p} proces
 Since it only serves as the background for technical discussion this representation of the process is intentionally simple.
 
 On the \enquote{procure} side, the process begins with a request.
-For example, when an employee of an organization requests a new stack of printing paper, they would create a request for it in the system.
+For example, when an employee of an organization needs a new stack of printing paper, they would create a request for it in the system.
 After the request has been created, it requires the approval of a supervisor---a cost center manager, for example.
 Once the request is approved, the organization's purchasing department can create an order which is then sent to the supplier.
 
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.9\textwidth]{procure-to-pay.drawio.png}
-  \caption{The Procure-to-Pay Process}\label{fig:procure-to-pay}
+  \caption{The Procure-to-Pay process}\label{fig:procure-to-pay}
 \end{figure}
 
-When the ordered goods are delivered to the organization, the process continues on the \emph{pay} side.
+When the ordered goods are delivered to the organization, the process continues on the \enquote{pay} side.
 The goods are inspected and a goods receipt is created which is checked against the supplier's invoice.
 If everything is in order, payment is made to the supplier.
 
@@ -166,7 +165,7 @@ They consume and publish messages with domain events to and from domain-specific
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.85\textwidth]{architecture.drawio.png}
-  \caption{The Example Architecture}\label{fig:example-architecture}
+  \caption{The example architecture}\label{fig:example-architecture}
 \end{figure}
 
 In the figure, the different actors that use the \gls{is} in the context of the procurement process are shown at the top.
@@ -177,9 +176,8 @@ Hence, the \emph{Purchasing UI} interacts with both the \emph{Request Service} a
 Requests are approved by managers via the \emph{Workflow UI} that interacts with the underlying \emph{Workflow Service}.
 Although they are omitted in the diagram, each microservice is assumed to have a dedicated persistent storage.
 
-The asynchronous communication of the microservices via the broker is represented in figure \ref{fig:example-architecture} by the dashed arrows.
-The \emph{Request Service} publishes events to the \emph{Requests} topic.
-These events---in sum---contain all the information on all requests that exist in the system.
+The asynchronous communication of the microservices via the broker is represented in figure \ref{fig:example-architecture} by dashed arrows.
+The \emph{Request Service} publishes domain events to the \emph{Requests} topic, which---in sum---contain all the information on all requests that exist in the system.
 Listing \ref{lst:request-created} shows what an event of the request domain may look like.
 
 \begin{listing}[h]
@@ -228,7 +226,7 @@ As described in section \ref{sec:method}, the following section continues the ro
 \section{Synchronous Communication in Message-driven Information Systems}\label{sec:concept}
 
 This section first deduces requirements from the problem analysis and the qualities of a reactive system.
-It the discusses the solution approaches from professional literature and finally constructs a concept to address the problem.
+It then discusses the solution approaches from professional literature and finally constructs a concept to address the problem.
 
 \subsection{Requirements}\label{sec:requirements}
 
@@ -239,7 +237,7 @@ Based on the premise of this work, that the \gls[]{is} is supposed to be reactiv
 \begin{table}[ht]
   \begin{tabu}{| l | X |}
     \hline
-    F1 & Must enable directed communication from A to B and a corresponding response from B to A.                              \\
+    F1 & Must facilitate directed communication from A to B and a corresponding reply from B to A.                             \\
     \hline
     F2 & Must let A define an upper limit on the response time for B, before the communication is considered as having failed. \\
     \hline
@@ -248,7 +246,7 @@ Based on the premise of this work, that the \gls[]{is} is supposed to be reactiv
     N2 & Must be elastic towards varying workload.                                                                             \\
     \hline
   \end{tabu}
-  \caption{Requirements for a synchronous communication in reactive IS}\label{tab:requirements}
+  \caption{Requirements for synchronous communication in reactive IS}\label{tab:requirements}
 \end{table}
 
 Table \ref{tab:requirements} shows the requirements for a solution approach.
@@ -271,14 +269,14 @@ Multiple works address the introduction of synchronous communication semantics i
 
 \begin{description}
   \item[Events] communicate a fact and simultaneously act as a notification.
-  \item[Commands] request an operation and affect a change to the state of the system. They are always synchronous and may return a result
+  \item[Commands] request an operation and affect a change to the state of the system. They are always synchronous and may return a result.
   \item[Queries] request a value. They must not affect a change to the system's state and always return a result.
 \end{description}
 
-The description of commands matches the the problem closely and it is also elaborated upon some more.
-\cite[107--108]{stopford_designing_2018} propose that in order to follow the \gls[]{swp}, a two topic approach---one for domain events and one for commands---can be implemented.
+The description of commands matches the problem closely.
+\cite[107--108]{stopford_designing_2018} proposes that in order to follow the \gls[]{swp}, a two topic approach---one for domain events and one for commands---can be implemented.
 The \gls[]{swp} is a pattern to isolate consistency concerns by allowing only a single service to publish events of a specific type.
-By using two topics the \emph{Workflow Service}, for example, would be the only service to publish domain events to the \emph{Approvals} topic, but any other service could publish commands to the command topic from which only the \emph{Workflow Service} would consume.
+By using two topics, the \emph{Workflow Service}, for example, would be the only service to publish domain events to the \emph{Approvals} topic, but any other service could publish commands to the command topic from which only the \emph{Workflow Service} would consume.
 
 \cite[185--186]{millett_patterns_2015} also discusses commands in contrast with events.
 It defines commands similarly to \cite[]{stopford_designing_2018} but cautions that commands increase the logical coupling between components.
@@ -291,32 +289,28 @@ It only carries information---like the reply to a command.
 
 Beyond this, \cite[87--90]{richardson_microservices_2019} outline a more detailed proposal for implementing request/reply (or command/reply) communication.
 The approach also uses two topics.
-One like \citeauthor{stopford_designing_2018}'s command topic that other services send commands to and then one to which the reply is published.
+One, like \citeauthor{stopford_designing_2018}'s command topic, that other services send commands to and then one to which the reply is published.
 The publisher of the command, service A, includes an identifier for the reply topic in the message, as well as a correlation ID.
 The consumer of the command, service B, uses this information to publish the reply to the appropriate topic and also includes the same correlation ID.
 With the ID, service A can correlate the reply to the command and process it accordingly.
 
 The F1 requirement calls for the implementation of commands as described by \citeauthor{stopford_designing_2018}.
-However, a potential solution could also support queries by making the time out optional.
-It would still satisfy F1 by providing the capability while making the solution more flexible.
 Futhermore, the approach proposed by \citeauthor{richardson_microservices_2019} satisfies F1 but not F2.
-
-Regarding the non-functional requirements, using topics for commands and replies give the command processors the flexibility to process the queue of commands on their own time.
+Regarding the non-functional requirements, using topics for commands and replies give the command processors the flexibility to process the queue of commands in their own time.
 It also eliminates the potential hazard of resource exhaustion, that an HTTP-based solution would have.
 Therefore, the approach fulfills N2.
 
 For N1 however, the situation is different.
 If the message broker persists messages even when it is shut down, then it adds to the resilience of the system, because if for example the command processor fails, it can just continue processing commands when it is back up.
 Given, of course, that they have not already timed out.
-Although the command senders could still retry sending it a couple of times.
-To do so after a failure on the sender's side however, would require it to persist the information about the commands that it has sent and their correlation IDs.
+Although the command senders could still try to send it couple more times.
+To do so after a failure on the sender's side however, would require it to persist the information about the commands that it has sent as well as their correlation IDs.
 This is currently still missing and therefore N1 is not fulfilled.
 
 \subsection{Concept}
 
 This section describes a concept for synchronous communication in a message-driven system that fulfills the requirements defined in section \ref{sec:requirements}.
 It builds on the approach from \cite{richardson_microservices_2019} and enhances it with more flexibility and resilience.
-Furthermore, this section shows how the concept can be integrated into the \gls[]{is} architecture presented in section \ref{sec:application}.
 
 \begin{figure}[H]
   \centering
@@ -326,8 +320,8 @@ Furthermore, this section shows how the concept can be integrated into the \gls[
 
 Figure \ref{fig:concept} shows a simple representation of the concept.
 It is similar to the approach of \cite[]{richardson_microservices_2019} discussed before.
-\emph{Service} A publishes a command with a correlation ID and a direction to its own reply top to the command topic of \emph{Service B}.
-Service B processes the command and them publishes a reply message to \emph{Service A}'s reply topic as defined in the command.
+\emph{Service} A publishes a command with a correlation ID and a direction to its own reply topic to the command topic of \emph{Service B}.
+B processes the command and them publishes a reply message to \emph{Service A}'s reply topic as defined in the command.
 The services also have their own separate domain event topics, to which they are the sole publisher.
 
 \begin{table}
@@ -346,13 +340,13 @@ The services also have their own separate domain event topics, to which they are
   \caption{The \texttt{Command} table}\label{tab:command-datamodel}
 \end{table}
 
-Beyond beyond the approach discussed above, here \emph{Service A} also has a connected persistent storage where it writes meta-information to keep track of the commands it has sent out.
+Beyond \citeauthor{richardson_microservices_2019}'s approach, \emph{Service A} also has a connected persistent storage where it writes meta-information to keep track of the commands it has sent.
 Table \ref{tab:command-datamodel} presents the schema for such storage.
-Through this storage, \emph{Service A} keeps the information about the commands that it has sent and can resume consuming replies once it has recovered.
+Through this storage, \emph{Service A} is able to retain the information about the commands that it has sent even when it experiences an outage, thereby enabling it to resume consuming replies once it has recovered.
 This allows the concept to fulfill requirement N1.
 
-To address the requirement F2 as well, the concept features a worker thread that runs in parallel to the regular execution threads of \emph{Service A} and periodically checks the storage for timed out commands.
-The next section clarifies this concept further by integrating it into the example architecture from section \ref{sec:problem}.
+To address the requirement F2, the concept features a worker thread that runs in parallel to the regular execution threads of \emph{Service A} and periodically checks the storage for timed out commands.
+The next section provides further clarification by integrating the solution into the example architecture from section \ref{sec:problem}.
 
 \subsection{Bringing Synchronous Communication to Message-driven Information Systems}
 
@@ -369,14 +363,14 @@ Listing \ref{lst:create-approval-request} shows an example.
 
 \begin{listing}[h]
   \inputminted{text}{assets/src/create-approval-request.txt}
-  \caption{An example \texttt{CreateApprovalRequest} command}\label{lst:create-approval-request}
+  \caption{An example for a \texttt{CreateApprovalRequest} command}\label{lst:create-approval-request}
 \end{listing}
 
 The representation is inspired by the HTTP protocol and features the targeted topic in the first line, preceded by the keyword \texttt{PUBLISH}.
 The following lines contain message headers as key-value-pairs separated by a colon and whitespace.
-The remaining lines after the separating empty line represent the message's body
+The remaining lines after the empty line represent the message's body
 
-After the service has published the command message, it updates the associated data base entry.
+After the service has published the command message, it updates the associated store entry.
 Table \ref{tab:command-table-2} shows the updated state of the command table at this point.
 
 \begin{listing}[h]
@@ -384,25 +378,25 @@ Table \ref{tab:command-table-2} shows the updated state of the command table at 
   \caption{An example result to a \texttt{CreateApprovalRequest} command}\label{lst:create-approval-request-result}
 \end{listing}
 
-After the \emph{Workflow Service} has consumed and processed the command, it publishes a reply to the \emph{Request Service}'s reply topic.
+When the \emph{Workflow Service} has consumed and processed the command, it publishes a reply to the \emph{Request Service}'s reply topic.
 If the operation was successful, it may reply with some information about the newly created approval request.
 Listing \ref{lst:create-approval-request-result} shows what such a reply might look like.
 
-If, on the other hand, the command could not be processed properly,the service may reply with an error.
-An example for a reply like that is shown by \ref{lst:create-approval-request-error}.
+If, on the other hand, the command could not be processed properly, the service may reply with an error.
+An example for a reply like that is shown by listing \ref{lst:create-approval-request-error}.
 
 \begin{listing}[h]
   \inputminted{text}{assets/src/error.txt}
   \caption{An example error of a \texttt{CreateApprovalRequest} command}\label{lst:create-approval-request-error}
 \end{listing}
 
-In parallel to the process described above, a worker thread is periodically checking the entities in the command store with the status \texttt{SENT} whether the time that passed since their \texttt{SentAt} exceeds the defined timeout value.
-For every entry that has timed out, it invokes a handler procedure that for example logs an error or tries sending the command again.
-The entry is also removed from the data base.
+In parallel to the process described above, a worker thread is periodically checking the entities in the command store that have the status \texttt{SENT} for whether the time that passed since their \texttt{SentAt} timestamp exceeds the defined timeout value.
+For every entry that has timed out, it invokes a handler procedure that, for example, logs an error or tries sending the command again.
+The entry is also removed from the store.
 
 When the \emph{Request Service} consumes a reply, it uses the enclosed correlation ID to find the corresponding entry in the command table and removes it.
 Then the reply is handed over to a dedicated handler procedure.
-Optionally, the entries may also be kept in the data base for user feedback, troubleshooting or analysis and monitoring.
+Optionally, the entries may also be kept in the store for user feedback, troubleshooting or analysis and monitoring.
 A simple way of implementing this would be to extend the value range of the \texttt{Status} field with values like \texttt{SUCCESS}, \texttt{FAILURE} and \texttt{TIMEOUT}, and simply update the entries instead of deleting them.
 
 This application of the resilient command/reply concept to the example \gls[]{is} architecture illustrates that it fulfills the requirements defined in section \ref{sec:requirements}.
@@ -412,15 +406,16 @@ It facilitates synchronous communication between two services in a resilient and
 \section{Conclusion}\label{sec:conclusion}
 
 This work began with a problem that my colleagues and I have faced repeatedly without a clear way of how to solve it.
-Therefore, the goal of this work was defined as creating a concept for implementing synchronous communication in a reactive \gls[]{is} and method of achieving it was based on the \gls[]{dsr} roadmap of \cite[]{alturki_design_2011}
+Therefore, the goal of this work was defined as creating a concept for implementing synchronous communication in a reactive \gls[]{is}.
+The method of achieving it was based on the \gls[]{dsr} roadmap of \cite[]{alturki_design_2011}.
 
 After establishing the necessary foundations, an example architecture design of a reactive \gls[]{is} implementing parts of the \gls[]{p2p} process was introduced.
 It served as a vehicle to clearly identify a use case for synchronous communication in reactive systems which then provided the basis for a definition of requirements for a solution approach.
 After the professional literature had been consulted, a solution approach was developed which finally was introduced to the architecture design to fill the need and close the gap.
 
-The result of this work is a details examination of the problem space around synchronous communication in reactive systems as well as an exploration of professional literature regarding that topic.
-The concept which was synthesized from that fulfills the identified requirements and appears promising.
-However, evaluating it artificially like that is only the first step of testing its quality.
+The result of this work is a detailed examination of the problem space around synchronous communication in reactive systems as well as an exploration of professional literature regarding that topic.
+The concept which was synthesized fulfills the identified requirements and appears promising.
+However, only evaluating it artificially is just the first step of testing its quality.
 
 The so far promising outlook inspires confidence to continue to the next step---evaluating the concept in practice.
 That means implementing a prototype solution and introducing it to an actual reactive \gls[]{is} to verify that it actually addresses the problem properly.
