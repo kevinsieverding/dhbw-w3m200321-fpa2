@@ -263,16 +263,72 @@ For example, either A or B failing during conversation.
 In such a case, data must not be lost and the parties must be able to resume the communication.
 Similarly, the solution must be elastic.
 It must be able to function under varying workload and must not add any significant performance impact for high load scenarios.
+\todo{disqualify the http approach}
 
-\subsection{Alternative Solutions}
+\subsection{Approaches in Professional Literature}
 
 Multiple works address the introduction of synchronous communication semantics into message-based systems.
+\cite[30--32]{stopford_designing_2018} discusses synchronous semantics in the context of different roles that messages can fulfill.
 
+\begin{description}
+  \item[Events] communicate a fact and simultaneously act as a notification.
+  \item[Commands] request an operation and affect a change to the state of the system. They are always synchronous and may return a result
+  \item[Queries] request a value. They must not affect a change to the system's state and always return a result.
+\end{description}
+
+The description of commands matches the the problem closely and it is also elaborated upon some more.
+\cite[107--108]{stopford_designing_2018} propose that in order to follow the \gls[]{swp}, a two topic approach---one for domain events and one for commands---can be implemented.
+The \gls[]{swp} is a pattern to isolate consistency concerns by allowing only a single service to publish events of a specific type.
+By using two topics the \emph{Workflow Service}, for example, would be the only service to publish domain events to the \emph{Approvals} topic, but any other service could publish commands to the command topic from which only the \emph{Workflow Service} would consume.
+
+\cite[185--186]{millett_patterns_2015} also discusses commands in contrast with events.
+It defines commands similarly to \cite[]{stopford_designing_2018} but cautions that commands increase the logical coupling between components.
+
+\cite[86]{richardson_microservices_2019} however defines the roles that messages can take somewhat differently from \cite[]{stopford_designing_2018}.
+For one, it restricts the definition of commands less and allows them to also act as queries.
+Furthermore, it defines a new role: Document.
+A document is the basic function of a message.
+It only carries information---like the reply to a command.
+
+Beyond this, \cite[87--90]{richardson_microservices_2019} outline a more detailed proposal for implementing request/reply (or command/reply) communication.
+The approach also uses two topics.
+One like \citeauthor{stopford_designing_2018}'s command topic that other services send commands to and then one to which the reply is published.
+The publisher of the command, service A, includes an identifier for the reply topic in the message, as well as a correlation ID.
+The consumer of the command, service B, uses this information to publish the reply to the appropriate topic and also includes the same correlation ID.
+With the ID, service A can correlate the reply to the command and process it accordingly.
+
+The F1 requirement calls for the implementation of commands as described by \citeauthor{stopford_designing_2018}.
+However, a potential solution could also support queries by making the time out optional.
+It would still satisfy F1 by providing the capability while making the solution more flexible.
+Futhermore, the approach proposed by \citeauthor{richardson_microservices_2019} satisfies F1 but not F2.
+
+Regarding the non-functional requirements, using topics for commands and replies give the command processors the flexibility to process the queue of commands on their own time.
+It also eliminates the potential hazard of resource exhaustion, that an HTTP-based solution would have.
+Therefore, the approach fulfills N2.
+
+For N1 however, the situation is different.
+If the message broker persists messages even when it is shut down, then it adds to the resilience of the system, because if for example the command processor fails, it can just continue processing commands when it is back up.
+Given, of course, that they have not already timed out.
+Although the command senders could still retry sending it a couple of times.
+To do so after a failure on the sender's side however, would require it to persist the information about the commands that it has sent and their correlation IDs.
+This is currently still missing and therefore N1 is not fulfilled.
 
 \subsection{Concept}
+
+This section describes a concept for synchronous communication in a message-driven system that fulfills the requirements defined in section \ref{sec:requirements}.
+It builds on the approach from \cite{richardson_microservices_2019} and enhances it with more flexibility and resilience.
+Furthermore, this section shows how the concept can be integrated into the \gls[]{is} architecture presented in section \ref{sec:application}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{concept.drawio.png}
+  \caption{The Example Architecture}\label{fig:concept}
+\end{figure}
 
 % \clearpage
 % \section{Evaluation}\label{sec:evaluation}
 
 \clearpage
 \section{Conclusion}\label{sec:conclusion}
+
+\Blindtext[3]
