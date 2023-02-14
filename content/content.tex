@@ -119,7 +119,7 @@ Furthermore, some \gls[]{mom} concepts and implementations can have routing and 
 The text below however uses the term message broker to refer to a simple variant of \gls[]{mom} as described in the previous paragraph.
 
 \clearpage
-\section{A Message-Driven Information System}\label{sec:problem}
+\section{A Message-driven Information System}\label{sec:problem}
 
 This section examines the hypothetical architecture design of a reactive \gls[]{is} that implements a common business process to explore the problem of synchronous communication in message-driven systems.
 To begin, the following text introduces the business process which is implemented by the \gls[]{is}---the \gls[]{p2p} process.
@@ -165,7 +165,7 @@ They consume and publish messages with domain events to and from domain-specific
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.9\textwidth]{architecture.drawio.png}
+  \includegraphics[width=0.85\textwidth]{architecture.drawio.png}
   \caption{The Example Architecture}\label{fig:example-architecture}
 \end{figure}
 
@@ -248,7 +248,7 @@ Based on the premise of this work, that the \gls[]{is} is supposed to be reactiv
     N2 & Must be elastic towards varying workload.                                                                             \\
     \hline
   \end{tabu}
-  \caption[short]{Requirements for a synchronous communication in reactive IS}\label{tab:requirements}
+  \caption{Requirements for a synchronous communication in reactive IS}\label{tab:requirements}
 \end{table}
 
 Table \ref{tab:requirements} shows the requirements for a solution approach.
@@ -322,13 +322,93 @@ Furthermore, this section shows how the concept can be integrated into the \gls[
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.9\textwidth]{concept.drawio.png}
-  \caption{The Example Architecture}\label{fig:concept}
+  \caption{Resilient command/reply in message-driven Information Systems}\label{fig:concept}
 \end{figure}
 
-% \clearpage
-% \section{Evaluation}\label{sec:evaluation}
+Figure \ref{fig:concept} shows a simple representation of the concept.
+It is similar to the approach of \cite[]{richardson_microservices_2019} discussed before.
+\emph{Service} A publishes a command with a correlation ID and a direction to its own reply top to the command topic of \emph{Service B}.
+Service B processes the command and them publishes a reply message to \emph{Service A}'s reply topic as defined in the command.
+The services also have their own separate domain event topics, to which they are the sole publisher.
+
+\begin{table}
+  \centering
+  \begin{tabu}{| l | l |}\hline
+    \textbf{Field}          & \textbf{Type}       \\\hline
+    \texttt{\underline{ID}} & UUID                \\\hline
+    \texttt{CorrelationID}  & UUID                \\\hline
+    \texttt{Type}           & String              \\\hline
+    \texttt{Destination}    & String              \\\hline
+    \texttt{Status}         & Enum(CREATED, SENT) \\\hline
+    \texttt{CreatedAt}      & Timestamp           \\\hline
+    \texttt{SentAt}         & Timestamp           \\\hline
+    \texttt{Timeout}        & Time                \\\hline
+  \end{tabu}
+  \caption{The \texttt{Command} table}\label{tab:command-datamodel}
+\end{table}
+
+Beyond beyond the approach discussed above, here \emph{Service A} also has a connected persistent storage where it writes meta-information to keep track of the commands it has sent out.
+Table \ref{tab:command-datamodel} presents the schema for such storage.
+Through this storage, \emph{Service A} keeps the information about the commands that it has sent and can resume consuming replies once it has recovered.
+This allows the concept to fulfill requirement N1.
+
+To address the requirement F2 as well, the concept features a worker thread that runs in parallel to the regular execution threads of \emph{Service A} and periodically checks the storage for timed out commands.
+The next section clarifies this concept further by integrating it into the example architecture from section \ref{sec:problem}.
+
+\subsection{Bringing Synchronous Communication to Message-driven Information Systems}
+
+The functionality gap of the \gls[]{is} in section \ref{sec:problem} concerns the \emph{Request Service} instructing the \emph{Workflow Service} to create a new approval request.
+Thus, the \emph{Request Service} takes the role of \emph{Service A} from the previous section and the \emph{Workflow Service} takes the role of \emph{Service B}.
+
+With the necessary adjustments made to the two services and the message broker configuration (topics, event handlers, command storage and worker process), the process begins when a new request is created successfully in the \emph{Request Service}.
+The first thing it does is to create an initial entry in the command store.
+Table \ref{tab:command-table-1} shows an entry with example values.
+
+Next, the service publishes the a command message to the \emph{Workflow Service}'s commands topic.
+It contains the command's correlation ID as well as a direction to the \emph{Request Service}'s reply topic.
+Listing \ref{lst:create-approval-request} shows an example.
+
+\begin{listing}[h]
+  \inputminted{text}{assets/src/create-approval-request.txt}
+  \caption{An example \texttt{CreateApprovalRequest} command}\label{lst:create-approval-request}
+\end{listing}
+
+The representation is inspired by the HTTP protocol and features the targeted topic in the first line, preceded by the keyword \texttt{PUBLISH}.
+The following lines contain message headers as key-value-pairs separated by a colon and whitespace.
+The remaining lines after the separating empty line represent the message's body
+
+After the service has published the command message, it updates the associated data base entry.
+Table \ref{tab:command-table-2} shows the updated state of the command table at this point.
+
+\begin{listing}[h]
+  \inputminted{text}{assets/src/create-approval-request-result.txt}
+  \caption{An example result to a \texttt{CreateApprovalRequest} command}\label{lst:create-approval-request-result}
+\end{listing}
+
+After the \emph{Workflow Service} has consumed and processed the command, it publishes a reply to the \emph{Request Service}'s reply topic.
+If the operation was successful, it may reply with some information about the newly created approval request.
+Listing \ref{lst:create-approval-request-result} shows what such a reply might look like.
+
+If, on the other hand, the command could not be processed properly,the service may reply with an error.
+An example for a reply like that is shown by \ref{lst:create-approval-request-error}.
+
+\begin{listing}[h]
+  \inputminted{text}{assets/src/error.txt}
+  \caption{An example error of a \texttt{CreateApprovalRequest} command}\label{lst:create-approval-request-error}
+\end{listing}
+
+In parallel to the process described above, a worker thread is periodically checking the entities in the command store with the status \texttt{SENT} whether the time that passed since their \texttt{SentAt} exceeds the defined timeout value.
+For every entry that has timed out, it invokes a handler procedure that for example logs an error or tries sending the command again.
+The entry is also removed from the data base.
+
+When the \emph{Request Service} consumes a reply, it uses the enclosed correlation ID to find the corresponding entry in the command table and removes it.
+Then the reply is handed over to a dedicated handler procedure.
+Optionally, the entries may also be kept in the data base for user feedback, troubleshooting or analysis and monitoring.
+A simple way of implementing this would be to extend the value range of the \texttt{Status} field with values like \texttt{SUCCESS}, \texttt{FAILURE} and \texttt{TIMEOUT}, and simply update the entries instead of deleting them.
+
+This application of the resilient command/reply concept to the example \gls[]{is} architecture illustrates that it fulfills the requirements defined in section \ref{sec:requirements}.
+It facilitates synchronous communication between two services in a resilient and elastic manner.
 
 \clearpage
 \section{Conclusion}\label{sec:conclusion}
 
-\Blindtext[3]

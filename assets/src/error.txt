@@ -1,0 +1,13 @@
+PUBLISH request-service.replies.v1
+ID: 533e471d-d52e-4dd4-9f3b-5e5113fb1392
+Correlation-ID: d3da8b79-b9c9-42e5-a7de-b0e8c0c10398
+Content-Type: application/json
+Content-Language: en-US
+
+{
+  "type": "Error",
+  "payload": {
+    "code": 409,
+    "message": "An approval request with ID "
+  }
+}

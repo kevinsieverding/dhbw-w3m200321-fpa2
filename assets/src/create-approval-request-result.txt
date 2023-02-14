@@ -1,0 +1,11 @@
+PUBLISH request-service.replies.v1
+ID: 0fbc624c-5492-4c4d-9329-98920512d0a0
+Correlation-ID: d3da8b79-b9c9-42e5-a7de-b0e8c0c10398
+Content-Type: application/json
+
+{
+  "type": "CreateApprovalRequestResult",
+  "payload": {
+    "ID": "cbedf7d8-93d0-40b7-bc51-95211557b987"
+  }
+}

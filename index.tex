@@ -71,6 +71,10 @@
 
 \clearpage
 
+\listoftables
+
+\clearpage
+
 \listoffigures
 
 \clearpage
@@ -144,7 +148,27 @@
 
 \appendix
 
-% insert appendix sections here
+\begin{landscape}
+  \section{Command Table Iterations}
+  \begin{table}[ht]
+    \small
+    \begin{tabu}{| l | l | l | l | l | l | l | l |}\hline
+      \rowfont{\bfseries}
+      ID           & CorrelationID & Type                  & Destination                  & Status  & CreatedAt        & SentAt & Timeout \\\hline
+      8554cd69-... & d3da8b79-...  & CreateApprovalRequest & workflow-service.commands.v1 & CREATED & 2023-01-05T06... &        & 10000   \\\hline
+    \end{tabu}
+    \caption{The first iteration of the \texttt{Command} table}\label{tab:command-table-1}
+  \end{table}
+  \begin{table}[ht]
+    \small
+    \begin{tabu}{| l | l | l | l | l | l | l | l |}\hline
+      \rowfont{\bfseries}
+      ID           & CorrelationID & Type                  & Destination                  & Status & CreatedAt        & SentAt           & Timeout \\\hline
+      8554cd69-... & d3da8b79-...  & CreateApprovalRequest & workflow-service.commands.v1 & SENT   & 2023-01-05T06... & 2023-01-05T06... & 10000   \\\hline
+    \end{tabu}
+    \caption{The second iteration of the \texttt{Command} table}\label{tab:command-table-2}
+  \end{table}
+\end{landscape}
 
 \clearpage
 
