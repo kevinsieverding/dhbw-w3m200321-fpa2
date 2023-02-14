@@ -32,15 +32,14 @@ The rest of this section discusses the method in greater detail and how this wor
 
 The first two steps in \citeauthor{alturki_design_2011}'s roadmap are to \enquote{Document the Spark of an Idea/Problem} and to \enquote{Investigate and Evaluate the Importance of the Problem/Idea} \parencite[110--111]{alturki_design_2011}.
 Section \ref{sec:introduction} has already introduced the problem and discussed its relevance.
-Further examination of the problem is taken up in section \ref{sec:problem} which then also evaluates the feasibility of a new solution.
-The next step on the roadmap \parencite[111]{alturki_design_2011}.
+Further examination of the problem is taken up in section \ref{sec:problem} which then also evaluates the feasibility of a new solution---the next step on the roadmap \parencite[111]{alturki_design_2011}.
 
-Furthermore, section \ref{sec:problem} together with the research goal defined in section \ref{sec:introduction} define the research scope and resolve that the problem falls within the domain of design science, more specifically, \gls[]{dsr}.
+Furthermore, section \ref{sec:problem} together with the research goal defines the research scope and resolves that the problem falls within the domain of design science---more specifically \gls[]{dsr}.
 Thereby it completes the next three steps on the roadmap \parencite[111]{alturki_design_2011}.
 The theme of the research conducted here is the construction of an artifact and excludes its evaluation so that the scope intended for this work is not exceeded.\todo{maybe mention artificial evaluation}
 This addresses the seventh step on the roadmap: \enquote{Resolve Theme} \parencite[114]{alturki_design_2011}.
 
-Section \ref{sec:method} condenses the next five steps on the roadmap \parencite[114--115]{alturki_design_2011} into deriving requirements from the problem analysis and the qualities of a reactive system, exploring solution alternatives and constructing a concept for a concrete solution alternative.
+Section \ref{sec:method} condenses the next five steps on the roadmap \parencite[114--115]{alturki_design_2011} into deriving requirements from the problem analysis and the qualities of a reactive system, exploring the professional literature for matching approaches, and constructing a concept for a concrete solution.
 The step \enquote{Evaluate} is delegated to further work and the last step \enquote{Communicate findings} is addressed implicitly by this work \Parencite[115--116]{alturki_design_2011}.
 
 \clearpage
@@ -52,7 +51,7 @@ First, the qualities of reactive \gls[]{is} as defined by \cite[]{boner_reactive
 \subsection{Reactive Information Systems}
 
 In \cite[]{boner_reactive_2014} the authors define four qualities that they observed in various modern \glspl[]{is} of different domains.
-They describe how these qualities combine to make an \gls[]{is} what they call \emph{reactive} and how a reactive systems are more flexible, scalable, changeable and offer a superior user experience.
+They describe how these qualities combine to make an \gls[]{is} what they call \emph{reactive} and how reactive systems are more flexible, scalable, changeable and offer a superior user experience.
 
 \begin{figure}[ht]
   \centering
@@ -70,7 +69,7 @@ It must remain responsive even if it faces partial failure.
 The system is composed of isolated components that can fail and recover without bringing down the system as a whole.
 This composition is transparent for the client.
 
-No less important that resilience is being \emph{elastic}.
+Thirdly, reactive systems are \emph{elastic}.
 A system must remain responsive under varying workload.
 Its components can be scaled up or down according to demand to achieve elasticity in the most cost-effective manner.
 Both elasticity and resilience require the system's composition of isolated components.
@@ -105,8 +104,8 @@ Together with message-based integration it can serve as the conceptual foundatio
 \subsection{Message-driven Integration}
 
 The foundational quality of a reactive \gls[]{is} is being message-driven.
-System architectures commonly employ a dedicated software components solely for that purpose---the so-called \gls[]{mom}.
-\gls[]{mom} act as dedicated glue-ware that facilitates asynchronous message-passing between other software components.
+System architectures commonly employ a dedicated software component solely for that purpose---the so-called \gls[]{mom}.
+\gls[]{mom} acts as dedicated glue-ware that facilitates asynchronous message-passing between other software components.
 The software offers publish/subscribe functionality for packets of data called messages.
 Clients act as either \emph{publishers} or \emph{consumers}, or as both simultaneously.
 Publishers connect to the \gls[]{mom} to address a message to a specific communication channel often referred to as a \emph{topic}.
@@ -117,14 +116,14 @@ Other names that might be used for \gls[]{mom} are \emph{message bus} or \emph{m
 Depending on the source, these terms might be used synonymously or to refer to different variants of \gls[]{mom}.
 Furthermore, some \gls[]{mom} concepts and implementations can have routing and transformation functionality for messages as part of the component.
 \cite{banavar_case_1999} for example write of \enquote{message flow graphs} as part of \gls[]{mom} to offer this functionality.
-The text below however uses the term message broker and means it to be a simple \gls[]{mom} as described in the previous paragraph.
+The text below however uses the term message broker to refer to a simple variant of \gls[]{mom} as described in the previous paragraph.
 
 \clearpage
 \section{A Message-Driven Information System}\label{sec:problem}
 
 This section examines the hypothetical architecture design of a reactive \gls[]{is} that implements a common business process to explore the problem of synchronous communication in message-driven systems.
-To begin, the following introduces the business process which is implemented by the \gls[]{is}---the \gls[]{p2p} process.
-The process relatively simple and common to many organizations.
+To begin, the following text introduces the business process which is implemented by the \gls[]{is}---the \gls[]{p2p} process.
+The process is simple and common to many organizations.
 Therefore, it serves as a good example and does not distract from the technical discussion below.
 After the \gls[]{p2p} process, the text introduces the sample architecture and uses it as a basis for the problem discussion.
 
@@ -135,8 +134,7 @@ Since it only serves as the background for technical discussion this representat
 
 On the \enquote{procure} side, the process begins with a request.
 For example, when an employee of an organization requests a new stack of printing paper, they would create a request for it in the system.
-After the request has been created, it requires the approval of a supervisor.
-A cost center manager, for example.
+After the request has been created, it requires the approval of a supervisor---a cost center manager, for example.
 Once the request is approved, the organization's purchasing department can create an order which is then sent to the supplier.
 
 \begin{figure}[h]
@@ -152,7 +150,7 @@ If everything is in order, payment is made to the supplier.
 The example architecture implementing this process is introduced below.
 To keep it concise, it only implements the \emph{procure} part of the process.
 
-\subsection{A Reactive Procurement Application}
+\subsection{A Reactive Procurement Application}\label{sec:application}
 
 Figure \ref{fig:example-architecture} shows the example architecture.
 The procurement domain is decomposed into three bounded contexts: Request, Order and Workflow.
@@ -194,7 +192,7 @@ When an order is created via the \emph{Order Service}, it publishes an appropria
 From there, it could theoretically be consumed by other \glspl{is} to, for example, send the order to suppliers via mail or e-mail, or to reserve a budget in the company's accounts.
 Finally, the \emph{Workflow Service} publishes to the \emph{Approvals} topic when a manager approves a request.
 The \emph{Request Service} consumes these events to update the status of a request when it has been approved.
-This status change is then replicated to the \emph{Order Service} so that purchaser can create an order for the request.
+This status change is then replicated to the \emph{Order Service} so that a purchaser can create an order for the request.
 
 \subsection{The Need for Synchronous Communication}
 
@@ -209,7 +207,7 @@ To address this requirement, the \emph{Workflow Service} would need to listen to
 The same would be true for any other domain entity that might require approvals in the future.
 
 Instead of the \emph{Workflow Service} picking up the required approvals from the other bounded contexts, the scheme can be inverted so that the bounded contexts tell the service when they require an approval.
-This could be implemented by adding new topic \emph{Approval Requests} to the message broker and letting each domain that requires approvals publish events to it.
+This could be implemented by adding a new topic \emph{Approval Requests} to the message broker and letting each domain that requires approvals publish events to it.
 The \emph{Workflow Service} would consume and offer the approval requests to the appropriate users and publish events with the users' decisions to the \emph{Approvals} topic as it already does.
 In this setup, the \emph{Workflow Service} and other bounded contexts fall into the traditional roles of server and clients.
 
@@ -218,7 +216,7 @@ Clients of the \emph{Workflow Service} need to know whether the service has rece
 They require this information to prevent approval requests being lost if, for example, due to a bug in the \emph{Workflow Service} it cannot process a couple of messages and drops them instead.
 With the appropriate feedback, the other microservices could re-send the request after a waiting period to ensure that it is processed.
 It furthermore enables them to provide accurate feedback to their users.
-At this point the required mode mode of communication is synchronous because the clients need a reply from the server within a certain time frame.
+At this point the required mode of communication is synchronous because the clients need a reply from the server within a certain time frame.
 
 A simple solution to this problem is to break with the message-driven paradigm and let the other bounded contexts use an inherently synchronous communication pattern (like HTTP) to tell the \emph{Workflow Service} about new approval requests.
 This approach, however, has its downsides and the problem lies in choosing the best solution.
@@ -232,7 +230,7 @@ As described in section \ref{sec:method}, the following section continues the ro
 This section first deduces requirements from the problem analysis and the qualities of a reactive system.
 It the discusses the solution approaches from professional literature and finally constructs a concept to address the problem.
 
-\subsection{Requirements}
+\subsection{Requirements}\label{sec:requirements}
 
 In order to discern a solution to the problem explored above, a set of requirements needs to be defined to guide the discussion and evaluate approaches.
 The solution needs to fulfill both functional requirements (i.~e. functionally address the gap identified in section \ref{sec:problem}) as well as non-functional requirements.
